@@ -9,6 +9,11 @@
     "status": {
       "path": "/_v/status/:code",
       "public": true
+    },
+    "abtest": {
+      "path": "/_v/abtest",
+      "public": true,
+      "middlewares": ["abtest"]
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "service-example",
-  "vendor": "vtex",
+  "vendor": "decopartnerbr",
   "version": "0.2.26",
   "title": "Service Example",
   "description": "Reference app for VTEX IO Services",
@@ -20,6 +20,13 @@
       "name": "outbound-access",
       "attrs": {
         "host": "httpstat.us",
+        "path": "*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "*.deco.site",
         "path": "*"
       }
     },
