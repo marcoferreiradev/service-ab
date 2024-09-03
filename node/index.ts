@@ -5,6 +5,7 @@ import { Clients } from "./clients";
 import { status } from "./middlewares/status";
 import { validate } from "./middlewares/validate";
 import { abtest } from "./middlewares/abtest";
+import { proxy } from "./middlewares/proxy";
 
 const TIMEOUT_MS = 800;
 
@@ -32,6 +33,10 @@ const clients: ClientsConfig<Clients> = {
     status: {
       memoryCache,
     },
+    // This key will be merged with the default options and add this cache to our Proxy client.
+    proxy: {
+      memoryCache,
+    },
   },
 };
 
@@ -55,6 +60,9 @@ export default new Service({
     }),
     abtest: method({
       GET: [abtest],
+    }),
+    routing: method({
+      GET: [proxy],
     }),
   },
 });
