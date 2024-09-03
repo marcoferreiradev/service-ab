@@ -10,6 +10,7 @@ export async function abtest(
     // Faça a requisição usando o client Abtest
     const response = await abtest.fetchSite();
 
+    console.log('console full master atualizado',response)
     if (response) {
       ctx.status = 200;
       ctx.body = response;

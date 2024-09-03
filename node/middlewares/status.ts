@@ -1,27 +1,27 @@
 export async function status(ctx: Context, next: () => Promise<any>) {
   const {
     state: { code },
-    clients: { status: statusClient },
+    clients: { status },
   } = ctx
 
-  console.info('Received code:', code)
+  try {
+    // Faça a requisição usando o client Abtest
+    const response = await status.fetchSite();
 
-  const statusResponse = await statusClient.getStatus(code)
+    console.log('console full master atualizado',response)
+    if (response) {
+      ctx.status = 200;
+      ctx.body = response;
+      ctx.set('Content-Type', 'text/html');
+    } else {
+      ctx.status = 500;
+      ctx.body = 'Failed to fetch content from the site';
+    }
 
-  console.info('Status response:', statusResponse)
-
-  const {
-    headers,
-    data,
-    status: responseStatus,
-  } = await statusClient.getStatusWithHeaders(code)
-
-  console.info('Status headers', headers)
-  console.info('Status data:', data)
-
-  ctx.status = responseStatus
-  ctx.body = data
-  ctx.set('Cache-Control', headers['cache-control'])
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = `Error fetching site content: ${error}`;
+  }
 
   await next()
 }

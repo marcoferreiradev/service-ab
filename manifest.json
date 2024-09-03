@@ -53,7 +53,7 @@
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "*.deco.site",
+        "host": "usereserva.deco.site",
         "path": "*"
       }
     }

@@ -34,7 +34,7 @@ const isReestrictedHost = (host: string) => endsWith('myvtex.com', host)
 
 const proxyCall = async function(ctx: Context, evaluate: boolean, useReserva?: boolean) {
   const {
-    clients: { proxy }
+    clients: { proxy },
   } = ctx
 
   let href: string
@@ -74,7 +74,12 @@ const proxyCall = async function(ctx: Context, evaluate: boolean, useReserva?: b
     cookie,
     ...originalPathHeader,
     ...canonicalPathHeader,
+    'X-VTEX-Use-Https': 'true',
+    'Proxy-Authorization': ctx.vtex.authToken,
+    'Content-Type': 'text/html'
   })
+
+  console.log(response)
 
   ctx.status = response.status || 500
 

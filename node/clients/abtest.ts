@@ -17,6 +17,7 @@ export default class Abtest extends ExternalClient {
       timeout: 8000,
       maxRedirects: 5,
       headers: {
+        'X-VTEX-Proxy-To':"https://usereserva.deco.site",
         'X-VTEX-Use-Https': true,
         'Proxy-Authorization': this.context.authToken,
         'Accept-Encoding': '*',
