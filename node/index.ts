@@ -5,9 +5,8 @@ import { Clients } from "./clients";
 import { status } from "./middlewares/status";
 import { validate } from "./middlewares/validate";
 import { abtest } from "./middlewares/abtest";
-import { proxy } from "./middlewares/proxy";
 
-const TIMEOUT_MS = 800;
+const TIMEOUT_MS = 20000;
 
 // Create a LRU memory cache for the Status client.
 // The 'max' parameter sets the size of the cache.
@@ -32,11 +31,7 @@ const clients: ClientsConfig<Clients> = {
     // This key will be merged with the default options and add this cache to our Status client.
     status: {
       memoryCache,
-    },
-    // This key will be merged with the default options and add this cache to our Proxy client.
-    proxy: {
-      memoryCache,
-    },
+    }
   },
 };
 
@@ -61,8 +56,20 @@ export default new Service({
     abtest: method({
       GET: [abtest],
     }),
-    routing: method({
-      GET: [proxy],
-    }),
+    // styles: method({
+    //   GET: [status],
+    // }),
+    // live: method({
+    //   GET: [status],
+    // }),
+    // fonts: method({
+    //   GET: [status],
+    // }),
+    // deco: method({
+    //   GET: [status],
+    // }),
+    // fresh: method({
+    //   GET: [status],
+    // }),
   },
 });

@@ -14,10 +14,6 @@
       "path": "/_v/abtest",
       "public": true,
       "middlewares": ["abtest"]
-    },
-    "routing": {
-      "path": "/_proxy/",
-      "public": true
     }
   }
 }

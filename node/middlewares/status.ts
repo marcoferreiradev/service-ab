@@ -1,18 +1,22 @@
 export async function status(ctx: Context, next: () => Promise<any>) {
   const {
+    req,
     state: { code },
     clients: { status },
   } = ctx
 
-  try {
-    // Faça a requisição usando o client Abtest
-    const response = await status.fetchSite();
+  const currentPath = ctx.path
+  console.log('currentPath',currentPath)
 
-    console.log('console full master atualizado',response)
+  try {
+    const response = await status.fetchSite(currentPath,{
+      'X-VTEX-Proxy-To':"https://usereserva.deco.site",
+    });
+
+    // console.log('console full master atualizado',response)
     if (response) {
       ctx.status = 200;
       ctx.body = response;
-      ctx.set('Content-Type', 'text/html');
     } else {
       ctx.status = 500;
       ctx.body = 'Failed to fetch content from the site';

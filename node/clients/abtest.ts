@@ -14,7 +14,7 @@ export default class Abtest extends ExternalClient {
 
   public fetchSite = (): Promise<FetchSiteResponse> => {
     return this.http.get('', {
-      timeout: 8000,
+      timeout: 20000,
       maxRedirects: 5,
       headers: {
         'X-VTEX-Proxy-To':"https://usereserva.deco.site",
