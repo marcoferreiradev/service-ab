@@ -1,5 +1,15 @@
 import { forEachObjIndexed, pick } from "ramda";
 
+const DECO_ROUTES = [
+  "/live/",
+  "/fonts/",
+  "/deco/",
+  "/_frsh/",
+  "/image/",
+  "/sprites",
+  "/site.webmanifest"
+];
+
 const HEADERS_TO_SEND = [
   "accept",
   "accept-language",
@@ -29,10 +39,15 @@ const HEADERS_TO_RESPOND = [
 const ORIGINAL_PATH_HEADER = "x-vtex-original-path";
 const FORWARDED_PATH_HEADER = "x-forwarded-path";
 
+const isDecoRoute = (path: string) => {
+  return DECO_ROUTES.some((route) => path.startsWith(route));
+};
+
 export async function proxy(ctx: Context, next: () => Promise<any>) {
   const { state: { abtest }, clients: { proxy } } = ctx;
   const currentPath = ctx.path;
   console.log("Iniciando proxy para a rota:", currentPath);
+  console.log("isDecoRoute(currentPath)", isDecoRoute(currentPath))
 
   try {
     const segmentToken = ctx.cookies.get("vtex_segment");
@@ -55,7 +70,9 @@ export async function proxy(ctx: Context, next: () => Promise<any>) {
     const headers = {
       ...pick(HEADERS_TO_SEND, ctx.request.headers),
       cookie,
-      ...(abtest && { "X-VTEX-Proxy-To": "https://usereserva.deco.site" }),
+      ...(isDecoRoute(currentPath)
+        ? { "X-VTEX-Proxy-To": "https://usereserva.deco.site" }
+        : abtest && { "X-VTEX-Proxy-To": "https://usereserva.deco.site" }),
       ...originalPathHeader,
     };
 

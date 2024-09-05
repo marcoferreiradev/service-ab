@@ -17,6 +17,9 @@ const TIMEOUT_MS = 20000;
 const memoryCache = new LRUCache<string, any>({ max: 5000 });
 
 metrics.trackCache("home", memoryCache);
+metrics.trackCache("styles", memoryCache);
+metrics.trackCache("live", memoryCache);
+metrics.trackCache("fonts", memoryCache);
 
 // This is the configuration for clients available in `ctx.clients`.
 const clients: ClientsConfig<Clients> = {
@@ -30,6 +33,12 @@ const clients: ClientsConfig<Clients> = {
     },
     // This key will be merged with the default options and add this cache to our Status client.
     home: {
+      memoryCache,
+    },
+    styles: {
+      memoryCache,
+    },
+    live: {
       memoryCache,
     }
   },
@@ -56,17 +65,26 @@ export default new Service({
     styles: method({
       GET: [abtest, proxy],
     }),
-    // live: method({
-    //   GET: [status],
-    // }),
-    // fonts: method({
-    //   GET: [status],
-    // }),
-    // deco: method({
-    //   GET: [status],
-    // }),
-    // fresh: method({
-    //   GET: [status],
-    // }),
+    live: method({
+      GET: [proxy],
+    }),
+    fonts: method({
+      GET: [proxy],
+    }),
+    deco: method({
+      GET: [proxy],
+    }),
+    fresh: method({
+      GET: [proxy],
+    }),
+    image: method({
+      GET: [proxy],
+    }),
+    sprites: method({
+      GET: [proxy],
+    }),
+    webmanifest: method({
+      GET: [proxy],
+    }),
   },
 });

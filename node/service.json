@@ -13,6 +13,34 @@
     "styles": {
       "path": "/styles.css",
       "public": true
+    },
+    "live":{
+      "path": "/live/*",
+      "public":true
+    },
+    "fonts":{
+      "path": "/fonts/*",
+      "public":true
+    },
+    "deco":{
+      "path": "/deco/*",
+      "public":true
+    },
+    "fresh":{
+      "path": "/_frsh/*",
+      "public":true
+    },
+    "image":{
+      "path": "/image/*",
+      "public":true
+    },
+    "sprites":{
+      "path": "/sprites.svg",
+      "public": true
+    },
+    "webmanifest":{
+      "path": "/site.webmanifest",
+      "public": true
     }
   }
 }
