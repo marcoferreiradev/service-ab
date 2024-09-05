@@ -53,9 +53,9 @@ export default new Service({
     home: method({
       GET: [abtest, proxy],
     }),
-    // styles: method({
-    //   GET: [status],
-    // }),
+    styles: method({
+      GET: [abtest, proxy],
+    }),
     // live: method({
     //   GET: [status],
     // }),

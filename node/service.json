@@ -9,6 +9,10 @@
     "home": {
       "path": "/",
       "public": true
+    },
+    "styles": {
+      "path": "/styles.css",
+      "public": true
     }
   }
 }
