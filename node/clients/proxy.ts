@@ -8,7 +8,7 @@ interface FetchSiteResponse {
   status: number;
 }
 
-export default class Status extends ExternalClient {
+export default class Proxy extends ExternalClient {
   constructor(context: IOContext, opts?: InstanceOptions) {
     super('http://usereserva.deco.site', context, opts)
   }

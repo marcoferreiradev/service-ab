@@ -1,27 +1,31 @@
+const traffic = 0.5;
+
+const MatchRandom = () => {
+  return Math.random() < traffic;
+};
+
 export async function abtest(
   ctx: Context,
   next: () => Promise<unknown>,
 ) {
-  const {
-    clients: { abtest },
-  } = ctx;
+  const { cookies } = ctx;
+  const inAbtest = cookies.get('abtest');
 
-  try {
-    // Faça a requisição usando o client Abtest
-    const response = await abtest.fetchSite();
-
-    console.log('console full master atualizado',response)
-    if (response) {
-      ctx.status = 200;
-      ctx.body = response;
-      ctx.set('Content-Type', 'text/html');
-    } else {
-      ctx.status = 500;
-      ctx.body = 'Failed to fetch content from the site';
-    }
-
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = `Error fetching site content: ${error}`;
+  if (inAbtest) {
+    ctx.state.abtest = inAbtest === 'true';
+    await next();
+    return;
   }
+
+  const setAbTest = MatchRandom();
+
+  cookies.set('abtest', setAbTest.toString(), {
+    path: '/',
+    httpOnly: true,
+    // maxAge: 60 * 60 * 24 * 30,
+  });
+
+  ctx.state.abtest = setAbTest;
+
+  await next();
 }

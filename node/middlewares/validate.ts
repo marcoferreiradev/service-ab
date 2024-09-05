@@ -17,7 +17,7 @@ export async function validate(ctx: Context, next: () => Promise<any>) {
 
   const codeNumber = parseInt(code as string, 10)
 
-  ctx.state.code = codeNumber
+  // ctx.state.code = codeNumber
 
   await next()
 }

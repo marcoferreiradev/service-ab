@@ -2,7 +2,7 @@ import type { ClientsConfig, RecorderState, ServiceContext } from "@vtex/api";
 import { LRUCache, method, Service } from "@vtex/api";
 
 import { Clients } from "./clients";
-import { status } from "./middlewares/status";
+import { proxy } from "./middlewares/proxy";
 import { validate } from "./middlewares/validate";
 import { abtest } from "./middlewares/abtest";
 
@@ -16,7 +16,7 @@ const TIMEOUT_MS = 20000;
 // To force responses to be cached, consider adding the `forceMaxAge` option to your client methods.
 const memoryCache = new LRUCache<string, any>({ max: 5000 });
 
-metrics.trackCache("status", memoryCache);
+metrics.trackCache("home", memoryCache);
 
 // This is the configuration for clients available in `ctx.clients`.
 const clients: ClientsConfig<Clients> = {
@@ -29,7 +29,7 @@ const clients: ClientsConfig<Clients> = {
       timeout: TIMEOUT_MS,
     },
     // This key will be merged with the default options and add this cache to our Status client.
-    status: {
+    home: {
       memoryCache,
     }
   },
@@ -41,7 +41,7 @@ declare global {
 
   // The shape of our State object found in `ctx.state`. This is used as state bag to communicate between middlewares.
   interface State extends RecorderState {
-    code: number;
+    abtest: boolean;
   }
 }
 
@@ -50,11 +50,8 @@ export default new Service({
   clients,
   routes: {
     // `status` is the route ID from service.json. It maps to an array of middlewares (or a single handler).
-    status: method({
-      GET: [status],
-    }),
-    abtest: method({
-      GET: [abtest],
+    home: method({
+      GET: [abtest, proxy],
     }),
     // styles: method({
     //   GET: [status],

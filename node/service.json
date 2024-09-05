@@ -6,14 +6,9 @@
   "maxReplicas": 4,
   "workers": 1,
   "routes": {
-    "status": {
+    "home": {
       "path": "/",
       "public": true
-    },
-    "abtest": {
-      "path": "/_v/abtest",
-      "public": true,
-      "middlewares": ["abtest"]
     }
   }
 }
