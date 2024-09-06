@@ -7,7 +7,7 @@ const DECO_ROUTES = [
   "/_frsh/",
   "/image/",
   "/sprites",
-  "/site.webmanifest"
+  "/site.webmanifest",
 ];
 
 const HEADERS_TO_SEND = [
@@ -44,62 +44,79 @@ const isDecoRoute = (path: string) => {
 };
 
 export async function proxy(ctx: Context, next: () => Promise<any>) {
-  const { state: { abtest }, clients: { proxy } } = ctx;
+  const { state: { abtest }, clients: { proxy }, query } = ctx;
   const currentPath = ctx.path;
-  console.log("Iniciando proxy para a rota:", currentPath);
-  console.log("isDecoRoute(currentPath)", isDecoRoute(currentPath))
+  console.log("🔥 Iniciando proxy para a rota:", currentPath);
 
-  try {
-    const segmentToken = ctx.cookies.get("vtex_segment");
-    const sessionToken = ctx.cookies.get("vtex_session");
-    const bindingAddress = ctx.cookies.get("vtex_binding_address");
-    const segmentCookie = segmentToken ? `vtex_segment=${segmentToken};` : "";
-    const sessionCookie = sessionToken ? `vtex_session=${sessionToken};` : "";
-    const bindingAddressCookie = bindingAddress
-      ? `vtex_binding_address=${bindingAddress}`
-      : "";
-    const cookie =
-      `VtexIdclientAutCookie=${ctx.vtex.authToken};${segmentCookie}${sessionCookie}${bindingAddressCookie}`;
+  const segmentToken = ctx.cookies.get("vtex_segment");
+  const sessionToken = ctx.cookies.get("vtex_session");
+  const bindingAddress = ctx.cookies.get("vtex_binding_address");
 
-    const forwardedPath = ctx.get(FORWARDED_PATH_HEADER);
+  const segmentCookie = segmentToken ? `vtex_segment=${segmentToken};` : "";
+  const sessionCookie = sessionToken ? `vtex_session=${sessionToken};` : "";
+  const bindingAddressCookie = bindingAddress
+    ? `vtex_binding_address=${bindingAddress}`
+    : "";
 
-    const originalPathHeader = forwardedPath
-      ? { [ORIGINAL_PATH_HEADER]: encodeURI(forwardedPath) }
-      : null;
+  const cookie =
+    `VtexIdclientAutCookie=${ctx.vtex.authToken};${segmentCookie}${sessionCookie}${bindingAddressCookie}`;
 
-    const headers = {
-      ...pick(HEADERS_TO_SEND, ctx.request.headers),
-      cookie,
-      ...(isDecoRoute(currentPath)
-        ? { "X-VTEX-Proxy-To": "https://usereserva.deco.site" }
-        : abtest && { "X-VTEX-Proxy-To": "https://usereserva.deco.site" }),
-      ...originalPathHeader,
-    };
+  const forwardedPath = ctx?.get(FORWARDED_PATH_HEADER);
+  const originalPathHeader = forwardedPath
+    ? { [ORIGINAL_PATH_HEADER]: encodeURI(forwardedPath) }
+    : null;
 
-    const response = await proxy.teste(ctx.url, headers);
+  const headers = {
+    ...pick(HEADERS_TO_SEND, ctx?.request?.headers),
+    cookie,
+    ...originalPathHeader,
+    ...(isDecoRoute(currentPath)
+      ? { "X-VTEX-Proxy-To": "https://usereserva.deco.site" }
+      : abtest && {
+        "X-VTEX-Proxy-To": "https://usereserva.deco.site",
+      }),
+  };
+  const params = { ...query };
 
-    ctx.status = response.status || 500;
-
-    if (ctx.path === "/styles.css") {
-      ctx.set("Content-Type", "text/css");
+  if (ctx.method === "POST" && currentPath.includes("/deco/render")) {
+    try {
+      const response = await proxy.postToDecoRender(
+        ctx.url,
+        headers,
+        params,
+      );
+      ctx.body = response;
+    } catch (error) {
+      console.error("🔥 Error in POST /deco/render:", error);
+      ctx.status = 500;
+      ctx.body = `Error processing /deco/render: ${error}`;
     }
 
-    ctx.body = response.data;
+    await next();
+    return;
+  }
 
-    if (response.headers.vary) {
+  try {
+    const response = await proxy.teste(ctx.url, headers, params);
+
+    ctx.status = response?.status || 500;
+    ctx.body = response?.data;
+
+    if (response?.headers?.vary) {
       ctx.vary(response.headers.vary);
     }
 
-    const headersToRespond = pick(HEADERS_TO_RESPOND, response.headers);
+    const headersToRespond = pick(HEADERS_TO_RESPOND, response?.headers || {});
     forEachObjIndexed(
       (value: string, header) => value && ctx.set(header, value),
       headersToRespond,
     );
 
-    if (response.headers["content-encoding"]) {
-      ctx.set("Content-Encoding", response.headers["content-encoding"]);
+    if (response?.headers?.["content-encoding"]) {
+      ctx.set("Content-Encoding", response?.headers["content-encoding"]);
     }
   } catch (error) {
+    console.error("🔥 Error fetching site content:", error);
     ctx.status = 500;
     ctx.body = `Error fetching site content: ${error}`;
   }

@@ -73,6 +73,7 @@ export default new Service({
     }),
     deco: method({
       GET: [proxy],
+      POST: [proxy]
     }),
     fresh: method({
       GET: [proxy],
