@@ -8,6 +8,7 @@ const DECO_ROUTES = [
   "/image/",
   "/sprites",
   "/site.webmanifest",
+  "/sw"
 ];
 
 const HEADERS_TO_SEND = [
@@ -44,9 +45,16 @@ const isDecoRoute = (path: string) => {
 };
 
 export async function proxy(ctx: Context, next: () => Promise<any>) {
-  const { state: { abtest }, clients: { proxy }, query } = ctx;
+  const {
+    state: { abtest },
+    clients: { proxy },
+    query,
+    vtex: {
+      route: { id },
+    },
+  } = ctx;
   const currentPath = ctx.path;
-  console.log("🔥 Iniciando proxy para a rota:", currentPath);
+  console.log(`🔥 Iniciando proxy para o id ${id} - rota:`, currentPath);
 
   const segmentToken = ctx.cookies.get("vtex_segment");
   const sessionToken = ctx.cookies.get("vtex_session");

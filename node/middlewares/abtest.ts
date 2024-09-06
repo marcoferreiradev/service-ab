@@ -1,31 +1,39 @@
 const traffic = 0.5;
 
-const MatchRandom = () => {
-  return Math.random() < traffic;
-};
+const MatchRandom = () => Math.random() < traffic;
 
 export async function abtest(
   ctx: Context,
   next: () => Promise<unknown>,
 ) {
-  const { cookies } = ctx;
-  const inAbtest = cookies.get('abtest');
+  const { cookies, query } = ctx;
 
-  if (inAbtest) {
-    ctx.state.abtest = inAbtest === 'true';
+  if (query?.abtest) {
+    const abtestFlag = query.abtest === "true";
+
+    cookies.set("abtest", abtestFlag.toString(), {
+      path: "/",
+      httpOnly: false,
+    });
+
+    ctx.state.abtest = abtestFlag;
     await next();
     return;
   }
 
-  const setAbTest = MatchRandom();
+  const inAbtest = cookies.get("abtest");
 
-  cookies.set('abtest', setAbTest.toString(), {
-    path: '/',
-    httpOnly: true,
-    // maxAge: 60 * 60 * 24 * 30,
-  });
+  if (inAbtest) {
+    ctx.state.abtest = inAbtest === "true";
+  } else {
+    const setAbTest = MatchRandom();
+    cookies.set("abtest", setAbTest.toString(), {
+      path: "/",
+      httpOnly: false,
+    });
 
-  ctx.state.abtest = setAbTest;
+    ctx.state.abtest = setAbTest;
+  }
 
   await next();
 }

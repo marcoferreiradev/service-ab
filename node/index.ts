@@ -87,5 +87,8 @@ export default new Service({
     webmanifest: method({
       GET: [proxy],
     }),
+    serviceworker: method({
+      GET: [proxy]
+    })
   },
 });

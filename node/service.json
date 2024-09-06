@@ -41,6 +41,10 @@
     "webmanifest":{
       "path": "/site.webmanifest",
       "public": true
+    },
+    "serviceworker":{
+      "path": "/sw.js",
+      "public": true
     }
   }
 }
