@@ -45,6 +45,10 @@
     "serviceworker":{
       "path": "/sw.js",
       "public": true
+    },
+    "search":{
+      "path":"/s",
+      "public": true
     }
   }
 }

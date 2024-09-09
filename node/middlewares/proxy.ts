@@ -1,4 +1,6 @@
 import { forEachObjIndexed, pick } from "ramda";
+import bodyParser from "co-body";
+import { error } from "console";
 
 const DECO_ROUTES = [
   "/live/",
@@ -8,7 +10,7 @@ const DECO_ROUTES = [
   "/image/",
   "/sprites",
   "/site.webmanifest",
-  "/sw"
+  "/sw",
 ];
 
 const HEADERS_TO_SEND = [
@@ -84,14 +86,27 @@ export async function proxy(ctx: Context, next: () => Promise<any>) {
         "X-VTEX-Proxy-To": "https://usereserva.deco.site",
       }),
   };
+
+
   const params = { ...query };
 
   if (ctx.method === "POST" && currentPath.includes("/deco/render")) {
+    const contentType = ctx.get("content-type") || "";
+
+    const body = contentType
+      ? await bodyParser(ctx.req).catch((error) => {
+        console.log("🔥 error in bodyParser", error);
+
+        return "";
+      })
+      : "";
+
     try {
       const response = await proxy.postToDecoRender(
         ctx.url,
         headers,
         params,
+        body,
       );
       ctx.body = response;
     } catch (error) {

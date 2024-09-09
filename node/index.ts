@@ -5,8 +5,9 @@ import { Clients } from "./clients";
 import { proxy } from "./middlewares/proxy";
 import { validate } from "./middlewares/validate";
 import { abtest } from "./middlewares/abtest";
+import { searchRedirect } from "./middlewares/searchRedirect";
 
-const TIMEOUT_MS = 20000;
+export const TIMEOUT_MS = 20000;
 
 // Create a LRU memory cache for the Status client.
 // The 'max' parameter sets the size of the cache.
@@ -89,6 +90,9 @@ export default new Service({
     }),
     serviceworker: method({
       GET: [proxy]
+    }),
+    search: method({
+      GET: [searchRedirect, proxy]
     })
   },
 });
