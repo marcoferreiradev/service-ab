@@ -81,9 +81,9 @@ export async function proxy(ctx: Context, next: () => Promise<any>) {
     cookie,
     ...originalPathHeader,
     ...(isDecoRoute(currentPath)
-      ? { "X-VTEX-Proxy-To": "https://usereserva.deco.site" }
+      ? { "X-VTEX-Proxy-To": "https://neovista.mizuno.com.br" }
       : abtest && {
-        "X-VTEX-Proxy-To": "https://usereserva.deco.site",
+        "X-VTEX-Proxy-To": "https://neovista.mizuno.com.br",
       }),
   };
 

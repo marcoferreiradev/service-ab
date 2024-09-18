@@ -9,7 +9,7 @@ interface FetchSiteResponse {
 
 export default class Abtest extends ExternalClient {
   constructor(context: IOContext) {
-    super('http://usereserva.deco.site', context)
+    super('http://neovista.mizuno.com.br', context)
   }
 
   public fetchSite = (): Promise<FetchSiteResponse> => {
@@ -17,7 +17,7 @@ export default class Abtest extends ExternalClient {
       timeout: 20000,
       maxRedirects: 5,
       headers: {
-        'X-VTEX-Proxy-To':"https://usereserva.deco.site",
+        'X-VTEX-Proxy-To':"https://neovista.mizuno.com.br",
         'X-VTEX-Use-Https': true,
         'Proxy-Authorization': this.context.authToken,
         'Accept-Encoding': '*',

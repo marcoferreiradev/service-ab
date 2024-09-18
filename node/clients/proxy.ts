@@ -5,7 +5,7 @@ import qs from "qs";
 import { TIMEOUT_MS } from "..";
 export default class Proxy extends ExternalClient {
   constructor(context: IOContext, opts?: InstanceOptions) {
-    super("http://usereserva.deco.site", context, opts);
+    super("http://neovista.mizuno.com.br", context, opts);
   }
 
   public fetchSite = (
@@ -47,10 +47,10 @@ export default class Proxy extends ExternalClient {
         // "Accept-Encoding": "*",
         contentType,
         "Accept-Encoding": "gzip, deflate, br",
-        "X-VTEX-Proxy-To": "https://usereserva.deco.site",
-        "origin": "https://usereserva.deco.site",
-        "referer": "https://usereserva.deco.site",
-        "hx-current-url": "https://usereserva.deco.site/",
+        "X-VTEX-Proxy-To": "https://neovista.mizuno.com.br",
+        "origin": "https://neovista.mizuno.com.br",
+        "referer": "https://neovista.mizuno.com.br",
+        "hx-current-url": "https://neovista.mizuno.com.br/",
         "Connection": "keep-alive",
       },
       params,
@@ -70,7 +70,7 @@ export default class Proxy extends ExternalClient {
         "X-VTEX-Use-Https": true,
         "Proxy-Authorization": this.context.authToken,
         "Accept-Encoding": "*",
-        "hx-current-url": "https://usereserva.deco.site/",
+        "hx-current-url": "https://neovista.mizuno.com.br/",
       },
       responseType: "stream",
       transformResponse: (x: any) => x,
