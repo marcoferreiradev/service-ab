@@ -3,7 +3,6 @@ import { LRUCache, method, Service } from "@vtex/api";
 
 import { Clients } from "./clients";
 import { proxy } from "./middlewares/proxy";
-import { validate } from "./middlewares/validate";
 import { abtest } from "./middlewares/abtest";
 import { searchRedirect } from "./middlewares/searchRedirect";
 
@@ -17,7 +16,7 @@ export const TIMEOUT_MS = 20000;
 // To force responses to be cached, consider adding the `forceMaxAge` option to your client methods.
 const memoryCache = new LRUCache<string, any>({ max: 5000 });
 
-metrics.trackCache("home", memoryCache);
+metrics.trackCache("neovista", memoryCache);
 metrics.trackCache("styles", memoryCache);
 metrics.trackCache("live", memoryCache);
 metrics.trackCache("fonts", memoryCache);
@@ -33,7 +32,7 @@ const clients: ClientsConfig<Clients> = {
       timeout: TIMEOUT_MS,
     },
     // This key will be merged with the default options and add this cache to our Status client.
-    home: {
+    neovista: {
       memoryCache,
     },
     styles: {
@@ -60,7 +59,7 @@ export default new Service({
   clients,
   routes: {
     // `status` is the route ID from service.json. It maps to an array of middlewares (or a single handler).
-    home: method({
+    neovista: method({
       GET: [abtest, proxy],
     }),
     styles: method({

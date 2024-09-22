@@ -1,4 +1,9 @@
-const traffic = 0.5;
+const convertTraffic = (value: number) => {
+  value = value || 1;
+  return value / 100;
+};
+
+const traffic = convertTraffic(50);
 
 const MatchRandom = () => Math.random() < traffic;
 
@@ -9,14 +14,14 @@ export async function abtest(
   const { cookies, query } = ctx;
 
   if (query?.abtest) {
-    const abtestFlag = query.abtest === "true";
+    const abtestFlag = query.abtest === "1" ? 1 : 0;
 
     cookies.set("abtest", abtestFlag.toString(), {
       path: "/",
       httpOnly: false,
     });
 
-    ctx.state.abtest = abtestFlag;
+    ctx.state.abtest = abtestFlag === 1;
     await next();
     return;
   }
@@ -24,15 +29,15 @@ export async function abtest(
   const inAbtest = cookies.get("abtest");
 
   if (inAbtest) {
-    ctx.state.abtest = inAbtest === "true";
+    ctx.state.abtest = inAbtest === "1";
   } else {
-    const setAbTest = MatchRandom();
+    const setAbTest = MatchRandom() ? 1 : 0;
     cookies.set("abtest", setAbTest.toString(), {
       path: "/",
       httpOnly: false,
     });
 
-    ctx.state.abtest = setAbTest;
+    ctx.state.abtest = setAbTest === 1;
   }
 
   await next();

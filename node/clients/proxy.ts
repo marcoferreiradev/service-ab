@@ -1,11 +1,17 @@
-import type { InstanceOptions, IOContext, IOResponse } from "@vtex/api";
+import type { InstanceOptions, IOContext } from "@vtex/api";
 import { ExternalClient } from "@vtex/api";
 import { AxiosResponse } from "axios";
 import qs from "qs";
 import { TIMEOUT_MS } from "..";
+
+export const BASE_URL = {
+  "http": "http://neovista.mizuno.com.br",
+  "https": "https://neovista.mizuno.com.br"
+}
+
 export default class Proxy extends ExternalClient {
   constructor(context: IOContext, opts?: InstanceOptions) {
-    super("http://neovista.mizuno.com.br", context, opts);
+    super(BASE_URL.http, context, opts);
   }
 
   public fetchSite = (
@@ -47,10 +53,10 @@ export default class Proxy extends ExternalClient {
         // "Accept-Encoding": "*",
         contentType,
         "Accept-Encoding": "gzip, deflate, br",
-        "X-VTEX-Proxy-To": "https://neovista.mizuno.com.br",
-        "origin": "https://neovista.mizuno.com.br",
-        "referer": "https://neovista.mizuno.com.br",
-        "hx-current-url": "https://neovista.mizuno.com.br/",
+        "X-VTEX-Proxy-To": BASE_URL.https,
+        "origin": BASE_URL.https,
+        "referer": BASE_URL.https,
+        "hx-current-url": BASE_URL.https,
         "Connection": "keep-alive",
       },
       params,
@@ -70,7 +76,7 @@ export default class Proxy extends ExternalClient {
         "X-VTEX-Use-Https": true,
         "Proxy-Authorization": this.context.authToken,
         "Accept-Encoding": "*",
-        "hx-current-url": "https://neovista.mizuno.com.br/",
+        "hx-current-url": BASE_URL.https,
       },
       responseType: "stream",
       transformResponse: (x: any) => x,

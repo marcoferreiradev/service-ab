@@ -1,6 +1,6 @@
 import { forEachObjIndexed, pick } from "ramda";
 import bodyParser from "co-body";
-import { error } from "console";
+import { BASE_URL } from "../clients/proxy";
 
 const DECO_ROUTES = [
   "/live/",
@@ -81,9 +81,9 @@ export async function proxy(ctx: Context, next: () => Promise<any>) {
     cookie,
     ...originalPathHeader,
     ...(isDecoRoute(currentPath)
-      ? { "X-VTEX-Proxy-To": "https://neovista.mizuno.com.br" }
+      ? { "X-VTEX-Proxy-To": BASE_URL.https }
       : abtest && {
-        "X-VTEX-Proxy-To": "https://neovista.mizuno.com.br",
+        "X-VTEX-Proxy-To": BASE_URL.https,
       }),
   };
 
